@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/5.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
-
+from datetime import timedelta
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -38,7 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'api.apps.ApiConfig',
-    'rest_framework'
+    'rest_framework',
+    'rest_framework_simplejwt'
 ]
 
 MIDDLEWARE = [
@@ -50,6 +51,22 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+# DRF 全局配置：使用 JWT 作为认证方式
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    )
+}
+
+# JWT 自定义配置（可选，不配置则使用默认值）
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=1),  # 访问 token 有效期
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),    # 刷新 token 有效期
+    'ROTATE_REFRESH_TOKENS': False,                  # 刷新时是否生成新的 refresh token
+    'ALGORITHM': 'HS256',                           # 加密算法（默认 HS256）
+    'SIGNING_KEY': SECRET_KEY,                      # 签名密钥（直接使用 Django 项目的 SECRET_KEY）
+}
 
 ROOT_URLCONF = 'DjangoProject1.urls'
 
@@ -123,3 +140,45 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+RSA_PUBLIC_KEY = '''
+-----BEGIN PUBLIC KEY-----
+MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAj8JYItzbxZu7YEEvNbPi
+C4EWDeA5Spe7I33XRzriq0y9He2b3s4v5b17rQd6W2qiQiAmfR8gxGptysU3Sdgj
+tf1ueQO0wblRUH7LjkSEYojHpQ+JGoCX380iIIFjl3jQtnhyVrij/Gsj7I81hb2y
+qZWEPtdXbvUpHJabOCu3TdprsoGjPNVxmv1vMAkrOSkaZ5zky7zyI8tyKpARzwZD
+Yp0gTaAoQvPx8NT9oCvMdfCy+YIBt+d3rFyDN+9OFbjuAcKUBeOyVHHkflfAjInn
+MFEGmHFmdv3xAu1TWQ6vBIhF9RTKquKbxx3SU7k0rk3lKaAFGVjR+1lC3tQOnuSG
+3wIDAQAB
+-----END PUBLIC KEY-----
+'''
+
+RSA_PRIVATE_KEY='''
+-----BEGIN RSA PRIVATE KEY-----
+MIIEogIBAAKCAQEAj8JYItzbxZu7YEEvNbPiC4EWDeA5Spe7I33XRzriq0y9He2b
+3s4v5b17rQd6W2qiQiAmfR8gxGptysU3Sdgjtf1ueQO0wblRUH7LjkSEYojHpQ+J
+GoCX380iIIFjl3jQtnhyVrij/Gsj7I81hb2yqZWEPtdXbvUpHJabOCu3TdprsoGj
+PNVxmv1vMAkrOSkaZ5zky7zyI8tyKpARzwZDYp0gTaAoQvPx8NT9oCvMdfCy+YIB
+t+d3rFyDN+9OFbjuAcKUBeOyVHHkflfAjInnMFEGmHFmdv3xAu1TWQ6vBIhF9RTK
+quKbxx3SU7k0rk3lKaAFGVjR+1lC3tQOnuSG3wIDAQABAoIBAAwH0xFj0z6HyFgH
+THidi6qzzFEv9QtxhDc1pkjvPB3ix6bUBinQroB26X0y9YHl/Bs1jpMFAlx9nZ+M
+/pH+9QobYd3dughGRnBKlCVdRYjrcm21TZ96qHsRsyvuOBPqh+jlTohEXnDW1IRM
+/ckp9WQsv4r0wXvnJ2AdmHLMccQhhaSwdFDPtXMQngappTdTcr6J4iVvAKL8ZgUu
+8KkB3u1ueF4obgPRNs/8cv+5TaEIjVysoFX7E0LqCUEAVgsrmoP5G8388q8G++01
+IBLfypnRbvuFvDyD08gYvU6Kjga7e7j858uamIO/L7KgKmzx39DegLxC/XhJF2dE
+iQf90KUCgYEAuIaxw+LEV7GtSR0cioFXnRlC/U31rtvTvRwGD62hIszvtKjKd42L
+N9JWgOSK9xtjHtu4HLt/SHRowp0rIwpjUo1GqWsVYJcgtFVOFlyynYkuDmDh8Tlk
+ckJDgcI+8N5QYvSccCzXH8kFL1Qv1TjW5cakE04MRr8ctqJMWKhjFmUCgYEAx3FD
+R/dGFzzuivn9pbDDLgCgxlABL4mMEd7EXKO9NbcaWcK3qzxjZlkPvytn0wcKGCev
+ScGxAznaHmxvZo6hQxGL3fNjGB4v+sa10dzDH9k4K5ZN9UOSPxC8nFdEaKWfax0B
+084xwQMI3MsIB03eZfipk/v+9LZjKgjcjj1SYfMCgYBTnW12Bw7TcgbEx7VEKeIK
+pQTPBYGbr68d1VIFzrbirxy7r3S3geMg82YRV/6EhNuAgy3Fj0zZBy7laRS/9xgU
+s0HeyVBRiYnfTXxp861YZ24AQ/R+O3SBtfcjGGMvAH5KqO8ugZMlqxB3Zt2Z7/yo
++D8nJEm50SXwuFCCKCNmZQKBgDFB3fYWMi9nExsr5uNXJr1j1lFkTQaql/eJ50Fi
+B0cO8+kbWDVocrxCXss+MyRBZtLUakxzE/7R+PbunQzdSSLBYKPuipjYS81J6nns
+Zhylj2PkeViL2cDNp2eNfg3Caf8QaPUgxdT/pN6zHkZ/it/wbCFqaWuS6CbnjWFr
+777VAoGAPeMqsL/cDH1GK1xIK6cP1q4ccgflNsmUeXgbGzsgh5h2iIk8uVyGso5t
+JQiIp2r/CDrj8u95SBy/6rzv/EYJZTeGHESABgcZPvwVjo08/Ii/FRvVTD4q9SOq
+APYje30GdGdLBq7cpjCl/bALkeinuqxLW4dWcpbxmDC6hKKaFMM=
+-----END RSA PRIVATE KEY-----
+'''
