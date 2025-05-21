@@ -18,10 +18,11 @@ from django.contrib import admin
 from django.urls import path
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView, TokenVerifyView
 
-from api.jwt_views import loginView
+from api.function.login_view import loginView
+from api.function.regisiter_view import regisiterView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/user/login/', loginView.as_view(), name='token_obtain_pair'),
-    path('api/user/regisiter/', TokenRefreshView.as_view(), name='token_refresh')
+    path('api/user/regisiter/', regisiterView.as_view(), name='token_refresh')
 ]
