@@ -14,9 +14,18 @@ class CustomUser(AbstractUser):
         verbose_name="设备号",
         help_text="请输入设备名称（例如：iPhone 12）",
     )
-    # IP 地址（自动校验 IPv4/IPv6 格式，推荐使用）
-    ip_address = models.GenericIPAddressField(
-        verbose_name="设备IP地址",
+    # 注册IP 地址（自动校验 IPv4/IPv6 格式，推荐使用）
+    login_ip = models.GenericIPAddressField(
+        verbose_name="登录IP地址",
+        help_text="请输入设备的 IP 地址（支持 IPv4/IPv6，如 192.168.1.1 或 2001:db8::1）",
+        protocol="both",
+        blank=False,
+        null=False,
+        db_index=True,
+    )
+    # 登录IP 地址（自动校验 IPv4/IPv6 格式，推荐使用）
+    regisiter_ip = models.GenericIPAddressField(
+        verbose_name="注册IP地址",
         help_text="请输入设备的 IP 地址（支持 IPv4/IPv6，如 192.168.1.1 或 2001:db8::1）",
         protocol="both",
         blank=False,
