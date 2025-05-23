@@ -20,9 +20,11 @@ from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 from api.function.login_view import loginView
 from api.function.regisiter_view import regisiterView
+from api.function.varifyVip_view import varifyVip
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/user/login/', loginView.as_view(), name='token_obtain_pair'),
-    path('api/user/regisiter/', regisiterView.as_view(), name='token_refresh')
+    path('api/user/login/', loginView.as_view(), name='user_login'),
+    path('api/user/regisiter/', regisiterView.as_view(), name='user_regisiter'),
+    path('api/user/varifyVip/', varifyVip.as_view(), name='user_varify'),
 ]

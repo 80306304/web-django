@@ -18,11 +18,20 @@ class varifyVip(TokenObtainPairView):
         # 1. 获取用户的 VIP 到期时间和设备号
         vip_time = user.vip_time
         device = user.device
-        ip_address = user.ip_address
+        regisiterIp = user.regisiter_ip
+        loginIp = user.login_ip
+        power = user.user_level
+        data = {
+            'msg': "账号已被封禁",
+            'power': power
+        }
+        if power == 0:return result.fail(data)
         data = {
             'vip_time': vip_time,
             'device': device,
-            'ip_address': ip_address
+            'regisiter_ip': regisiterIp,
+            'login_ip': loginIp,
+            'power': power
         }
         # 5. 返回成功响应
         return result.success(data)

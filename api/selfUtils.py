@@ -2,16 +2,15 @@ from rest_framework.response import Response
 import base64
 from Crypto.Cipher import AES
 from Crypto.Util.Padding import pad, unpad
-from django.conf import settings
 import base64
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.asymmetric import rsa, padding
 from cryptography.hazmat.primitives import serialization, hashes
 
-from DjangoProject1.settings import RSA_PUBLIC_KEY, RSA_PRIVATE_KEY
+from DjangoProject1.settings import RSA_PUBLIC_KEY, RSA_PRIVATE_KEY,AES_SECRET_KEY,AES_IV
 
-AES_SECRET_KEY = settings.AES_SECRET_KEY.encode('utf-8')  # 必须为 16/24/32 字节长度
-AES_IV = settings.AES_IV.encode('utf-8')  # 必须为 16 字节长度
+AES_SECRET_KEY = AES_SECRET_KEY.encode('utf-8')  # 必须为 16/24/32 字节长度
+AES_IV = AES_IV.encode('utf-8')  # 必须为 16 字节长度
 
 class result:
     """
