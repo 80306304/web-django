@@ -1,6 +1,6 @@
 import json
 
-
+from api.function.card import generate_card_codes
 from selfUtils import rsa_decrypt,rsa_encrypt
 
 
@@ -9,8 +9,8 @@ def crypt():
     username = 'liyx'
     password = 'liyx'
     param = {
-        "username":username,
-        "password":password
+        "email":"test111",
+        "password":"test111"
     }
     paramstr = json.dumps(param)
     data = rsa_encrypt(paramstr)
@@ -21,4 +21,5 @@ def crypt():
 
 
 if __name__ == '__main__':
-    crypt()
+    # crypt()
+    generate_card_codes(1)
