@@ -13,23 +13,16 @@ from api.selfUtils import rsa_decrypt, result
 
 @authentication_classes([JWTAuthentication])
 @permission_classes([IsAuthenticated])
-class varifyVip(TokenObtainPairView):
+class get_crypto(TokenObtainPairView):
     def get(self, request, *args, **kwargs):
         user = request.user
-        # 1. 获取用户的 VIP 到期时间和设备号
 
+        power = user.user_level
+        if power <=1:return result.success("无权限")
         data = {
             "type":"RSA",
-            "RSA_PUBLIC_KEY":RSA_PUBLIC_KEY,
-            "RSA_PRIVATE_KEY":RSA_PRIVATE_KEY
+            "RSA_PUBLIC_KEY":RSA_PUBLIC_KEY.replace('\n',''),
+            "RSA_PRIVATE_KEY":RSA_PRIVATE_KEY.replace('\n','')
         }
-        if power == 0:return result.success(data)
-        data = {
-            'vip_time': vip_time,
-            'device': device,
-            'regisiter_ip': regisiterIp,
-            'login_ip': loginIp,
-            'power': power
-        }
-        # 5. 返回成功响应
+
         return result.success(data)
