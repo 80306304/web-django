@@ -22,7 +22,7 @@ def generate_card_codes(count: int, check_unique: bool = True) -> list[str]:
             # 校验数据库唯一性（可选）
             if check_unique:
                 # 循环直到生成未使用的卡密（理论上几乎不会重复）
-                while Card.objects.filter(card_code=raw_code).exists():
+                while Card.objects.filter(key=raw_code).exists():
                     raw_code = str(uuid.uuid4()).replace('-', '').upper()
 
             generated_codes.append(raw_code)

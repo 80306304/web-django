@@ -21,6 +21,8 @@ from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from api.view.crypto_view import get_crypto
 from api.view.login_view import loginView
 from api.view.regisiter_view import regisiterView
+from api.view.test_view import test_f
+
 from api.view.varifyVip_view import varifyVip
 
 urlpatterns = [
@@ -29,4 +31,6 @@ urlpatterns = [
     path('api/user/regisiter/', regisiterView.as_view(), name='user_regisiter'),
     path('api/user/varifyVip/', varifyVip.as_view(), name='user_varify'),
     path('api/user/getCrypto/', get_crypto.as_view(), name='get_crypto'),
+    path('api/user/test/', test_f.as_view(), name='test'),
+
 ]
