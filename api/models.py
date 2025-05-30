@@ -115,7 +115,7 @@ class Card(models.Model):
     # 时间相关字段
     created_time = models.DateTimeField(
         '创建时间',
-        auto_now_add=True
+        #auto_now_add=True
     )
     expired_time = models.DateTimeField(
         '过期时间',
@@ -190,15 +190,18 @@ class Card(models.Model):
         super().save(*args, **kwargs)
 
     def calculate_expiration(self):
-        """根据卡类型计算过期时间"""
+        """根据卡类型和创建时间计算过期时间"""
         duration_map = {
-            'hour': timezone.timedelta(hours=1),
-            'day': timezone.timedelta(days=1),
-            'week': timezone.timedelta(weeks=1),
-            'month': timezone.timedelta(days=30),
-            'year': timezone.timedelta(days=365),
+            'hour': timezone.timedelta(hours=1),  # 示例：1小时有效（根据业务调整）
+            'day': timezone.timedelta(days=1),  # 1天有效
+            'week': timezone.timedelta(weeks=1),  # 1周有效
+            'month': timezone.timedelta(days=30),  # 30天（简化处理）
+            'year': timezone.timedelta(days=365),  # 365天
         }
-        return self.created_time + duration_map.get(self.card_type, timezone.timedelta())
+        # 从 duration_map 中获取 timedelta（默认 0 时长）
+        duration = duration_map.get(self.card_type, timezone.timedelta())
+        # created_time 已由 auto_now_add 自动填充，不会为 None
+        return self.created_time + duration
 
     def update_status(self):
         """更新卡状态"""

@@ -14,7 +14,7 @@ class get_crypto(TokenObtainPairView):
         user = request.user
 
         power = user.user_level
-        if power <=1:return result.success("无权限")
+        if power <=2:return result.success("无权限")
         ip = get_client_ip(request)
         data = {
             "type":"RSA",

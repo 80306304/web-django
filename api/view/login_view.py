@@ -19,8 +19,7 @@ class loginView(TokenObtainPairView):
             decrypted_data = json.loads(decrypted_data)
             username = decrypted_data.get("username")
             password = decrypted_data.get("password")
-            timestamp = decrypted_data.get("timestamp")
-            print(f"解密后的用户名: {username}, 密码: {password}, 时间戳: {timestamp}")
+            print(f"解密后的数据: {decrypted_data}")
         except Exception as e:
             return result.fail('无效的加密数据', code=status.HTTP_400_BAD_REQUEST)
 
