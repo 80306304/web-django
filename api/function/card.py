@@ -1,9 +1,12 @@
 # your_app/utils/card_code_generator.py
 import uuid
 from django.db import transaction
+from django.forms import model_to_dict
 from django.utils import timezone
 
-from api.models import Card
+from api.models import Card, CustomUser
+from api.selfUtils import result
+
 
 # 单生成卡密
 def generate_card_codes(count: int, check_unique: bool = True) -> list[str]:
@@ -66,3 +69,52 @@ def store_card_codes(codes: list[str], card_type: str="hour") -> None:
         card_objects,
         ignore_conflicts=True  # 若 key 是唯一字段，重复时跳过（根据业务需求调整）
     )
+
+
+def validate_card(key):
+    """
+    验证卡密有效性
+
+    Args:
+        code: 卡密字符串
+
+    Returns:
+        (状态码, 消息, 卡密对象)
+    """
+    try:
+        card = Card.objects.get(key=key)
+    except Card.DoesNotExist:
+        return result.fail("卡密不存在")
+
+    if card.status == "used":
+        return result.fail("卡密已使用")
+
+    if timezone.now() > card.expire_time or card.status == "expired":
+        return result.fail("卡密已过期")
+
+    return result.success("卡密有效,"+model_to_dict(card))
+
+def validate_card(key,user:CustomUser):
+    """
+    验证卡密有效性
+
+    Args:
+        code: 卡密字符串
+        user: 使用卡密的用户对象
+
+    Returns:
+        (状态码, 消息, 卡密对象)
+    """
+    try:
+        card = Card.objects.get(key=key)
+    except Card.DoesNotExist:
+        return result.fail("卡密不存在")
+
+    if card.status == "used":
+        return result.fail("卡密已使用")
+
+    if timezone.now() > card.expire_time or card.status == "expired":
+        return result.fail("卡密已过期")
+
+    user = CustomUser.objects.get(id=user.id)
+    return result.success(f"卡密已使用,到期时间：{card.expired_time}")
