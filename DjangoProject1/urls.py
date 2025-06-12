@@ -19,6 +19,7 @@ from django.urls import path
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView, TokenVerifyView
 
 from api.view.card_view import createCard
+from api.view.card_view import useCard
 from api.view.crypto_view import get_crypto
 from api.view.login_view import loginView
 from api.view.regisiter_view import regisiterView
@@ -34,5 +35,6 @@ urlpatterns = [
     path('api/user/getCrypto/', get_crypto.as_view(), name='get_crypto'),
     path('api/user/test/', test_f.as_view(), name='test'),
     path('api/user/createCard/', createCard.as_view(), name='varify'),
+    path('api/user/useCard/', useCard.as_view(), name='varify'),
 
 ]

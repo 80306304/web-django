@@ -94,7 +94,7 @@ def validate_card(key):
 
     return result.success("卡密有效,"+model_to_dict(card))
 
-def validate_card(key,user:CustomUser):
+def use_card(key,user:CustomUser):
     """
     验证卡密有效性
 
@@ -117,4 +117,12 @@ def validate_card(key,user:CustomUser):
         return result.fail("卡密已过期")
 
     user = CustomUser.objects.get(id=user.id)
+    if not card.expired_time and card.card_type != "permanent":
+        card.expired_time = card.calculate_expiration()
+        card.status = "used"
+        now_time = timezone.now()
+        card.used_time = now_time
+        user.vip_time = now_time
+        card.save()
+        user.save()
     return result.success(f"卡密已使用,到期时间：{card.expired_time}")
