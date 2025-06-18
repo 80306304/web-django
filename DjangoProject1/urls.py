@@ -36,5 +36,4 @@ urlpatterns = [
     path('api/user/test/', test_f.as_view(), name='test'),
     path('api/user/createCard/', createCard.as_view(), name='varify'),
     path('api/user/useCard/', useCard.as_view(), name='varify'),
-
 ]

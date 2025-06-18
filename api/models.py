@@ -201,7 +201,7 @@ class Card(models.Model):
         # 从 duration_map 中获取 timedelta（默认 0 时长）
         duration = duration_map.get(self.card_type, timezone.timedelta())
         # created_time 已由 auto_now_add 自动填充，不会为 None
-        return self.created_time + duration
+        return timezone.now() + duration
 
     def update_status(self):
         """更新卡状态"""
@@ -229,6 +229,7 @@ class Card(models.Model):
             'year': '年'
         }
         return f"{durations.get(self.card_type, '')}卡"
+
 
     @property
     def is_valid(self):

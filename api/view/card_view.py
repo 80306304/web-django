@@ -53,8 +53,5 @@ class useCard(TokenObtainPairView):
             print(f"解密后的值{decrypted_data}")
         except Exception as e:
             return result.fail('无效的加密数据', code=status.HTTP_400_BAD_REQUEST)
-
-
-
-
-        return result.success(use_card(key,user))
+        res = use_card(key, user)
+        return res

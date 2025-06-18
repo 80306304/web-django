@@ -9,11 +9,11 @@ def crypt():
         "password":"liyx"
     }
     param = {
-        "count":"1",
-        "type":"hour"
+        "count":"3",
+        "type":"week"
     }
     param = {
-        "key":"0D1ADC70F5C0400089B7127D6B0FCDB4"
+        "key":"2B20636F02B24E41A0E0E657B5B0E91A"
     }
     paramstr = json.dumps(param)
     data = rsa_encrypt(paramstr)

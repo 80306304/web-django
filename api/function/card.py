@@ -57,7 +57,7 @@ def store_card_codes(codes: list[str], card_type: str="hour") -> None:
         # 手动触发自定义逻辑（与 save 方法中的逻辑一致）
         # 1. 自动计算过期时间（仅非永久卡且未手动设置时）
         if not card.expired_time and card_type != "permanent":
-            card.expired_time = card.calculate_expiration()  # 调用模型中的计算方法
+            card.expired_time = timezone.now()+ timezone.timedelta(weeks=1) # 调用模型中的计算方法
 
         # 2. 自动更新状态（根据过期时间或卡类型）
         card.update_status()  # 调用模型中的状态更新方法
@@ -113,16 +113,15 @@ def use_card(key,user:CustomUser):
     if card.status == "used":
         return result.fail("卡密已使用")
 
-    if timezone.now() > card.expire_time or card.status == "expired":
+    if timezone.now() > card.expired_time or card.status == "expired":
         return result.fail("卡密已过期")
 
     user = CustomUser.objects.get(id=user.id)
-    if not card.expired_time and card.card_type != "permanent":
-        card.expired_time = card.calculate_expiration()
+    if card.card_type != "permanent":
         card.status = "used"
         now_time = timezone.now()
         card.used_time = now_time
-        user.vip_time = now_time
+        user.vip_time = card.calculate_expiration()
         card.save()
         user.save()
-    return result.success(f"卡密已使用,到期时间：{card.expired_time}")
+    return result.success(f"卡密已使用,到期时间：{user.vip_time}")
