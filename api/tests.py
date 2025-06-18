@@ -5,8 +5,10 @@ from selfUtils import rsa_decrypt,rsa_encrypt
 
 def crypt():
     param = {
-        "username":"liyx",
-        "password":"liyx"
+        "username":"liyx1",
+        "password":"liyx1",
+        "email":"111@qq.com",
+        "card":"FFFCCCB5BCCD4AA0824E34C75D1A9475"
     }
     param = {
         "count":"3",

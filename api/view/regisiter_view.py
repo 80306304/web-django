@@ -6,6 +6,7 @@ from rest_framework import status
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenObtainPairView
 
+from api.function.card import use_card
 from api.function.get_client_ip import get_client_ip
 from api.models import CustomUser
 from api.selfUtils import rsa_decrypt, result
@@ -39,8 +40,6 @@ class regisiterView(TokenObtainPairView):
         if CustomUser.objects.filter(email=email).exists():
             return result.fail('用户已被注册')
 
-
-
         user = CustomUser.objects.create_user(
             username=email,
             email=email,
@@ -49,14 +48,21 @@ class regisiterView(TokenObtainPairView):
             regisiter_ip=ip,
         )
         user.save()
+        if card_code!="":
+            res = use_card(card_code, user)
+            res = json.loads(res)
         try:
             refresh = RefreshToken.for_user(user)
             response_data = {
                 'refresh': str(refresh),
                 'access': str(refresh.access_token)
             }
+            if res != "":
+                res["auth"] = response_data
+                resText = res
+            else:
+                resText = result.success(response_data)
         except Exception as e:
             return result.fail("生成令牌失败", code=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
         # 5. 返回成功响应
-        return result.success(response_data)
+        return resText

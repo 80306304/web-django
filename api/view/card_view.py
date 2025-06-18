@@ -42,8 +42,6 @@ class createCard(TokenObtainPairView):
 class useCard(TokenObtainPairView):
     def post(self, request, *args, **kwargs):
         user = request.user
-        power = user.user_level
-        if power <= 2: return result.success("无权限")
 
         encrypted_data = request.data.get('data')
         try:
