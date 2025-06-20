@@ -1,5 +1,7 @@
 # your_app/utils/card_code_generator.py
 import uuid
+from datetime import datetime
+
 from django.db import transaction
 from django.forms import model_to_dict
 from django.utils import timezone
@@ -51,7 +53,7 @@ def store_card_codes(codes: list[str], card_type: str="hour") -> None:
             key=code,
             card_type=card_type,
             status="unused",  # 初始状态为未使用
-            created_time=timezone.now(),
+            created_time=timezone.now()
         )
 
         # 手动触发自定义逻辑（与 save 方法中的逻辑一致）
@@ -121,7 +123,11 @@ def use_card(key,user:CustomUser):
         card.status = "used"
         now_time = timezone.now()
         card.used_time = now_time
-        user.vip_time = card.calculate_expiration()
+        if user.vip_time == "" or user.vip_time is None:
+            user.vip_time = card.calculate_expiration()
+        else:
+            user.vip_time = user.vip_time + card.calculate_duration()
+        card.user_id = user.id
         card.save()
         user.save()
     return result.success(f"卡密已使用,到期时间：{user.vip_time}")

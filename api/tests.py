@@ -5,18 +5,18 @@ from selfUtils import rsa_decrypt,rsa_encrypt
 
 def crypt():
     param = {
-        "username":"liyx1",
-        "password":"liyx1",
-        "email":"111@qq.com",
-        "card":"FFFCCCB5BCCD4AA0824E34C75D1A9475"
+        "password":"liyx1111",
+        "email":"111111@qq.com",
+
+        "invite_code":"12345678"
     }
-    param = {
-        "count":"3",
-        "type":"week"
-    }
-    param = {
-        "key":"2B20636F02B24E41A0E0E657B5B0E91A"
-    }
+    # param = {
+    #     "count":"3",
+    #     "type":"week"
+    # }
+    # param = {
+    #     "key":"A53A19BB32894995A30BDBE80C2BFA39"
+    # }
     paramstr = json.dumps(param)
     data = rsa_encrypt(paramstr)
     print(data)

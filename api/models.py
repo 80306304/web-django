@@ -11,8 +11,10 @@ class CustomUser(AbstractUser):
         (2, '高级用户'),
         (3, '管理员'),
     ]
-    # 新增字段示例：手机号（允许为空）
-    vip_time = models.CharField(
+
+    vip_time = models.DateTimeField(
+        null=True,
+        blank=True,
         max_length=20,
         verbose_name="VIP到期时间",
         help_text="请输入格式为 'YYYY-MM-DD HH:MM' 的日期时间（例如：2025-05-21 14:30）",
@@ -47,12 +49,10 @@ class CustomUser(AbstractUser):
         verbose_name='用户等级',
         help_text='0-封号 | 1-普通用户 | 2-高级用户 | 3-管理员'
     )
-    invitation_code = models.CharField(
+    user_code = models.CharField(
         max_length=8,
         unique=True,
-        blank=True,
-        null=True,
-        verbose_name="邀请码"
+        verbose_name="用户编码"
     )
 
     # 上级邀请码（改为普通整数字段，不使用外键约束）
@@ -202,6 +202,19 @@ class Card(models.Model):
         duration = duration_map.get(self.card_type, timezone.timedelta())
         # created_time 已由 auto_now_add 自动填充，不会为 None
         return timezone.now() + duration
+
+    def calculate_duration(self):
+        """根据卡类型和创建时间计算过期时间"""
+        duration_map = {
+            'hour': timezone.timedelta(hours=1),  # 示例：1小时有效（根据业务调整）
+            'day': timezone.timedelta(days=1),  # 1天有效
+            'week': timezone.timedelta(weeks=1),  # 1周有效
+            'month': timezone.timedelta(days=30),  # 30天（简化处理）
+            'year': timezone.timedelta(days=365),  # 365天
+        }
+        # 从 duration_map 中获取 timedelta（默认 0 时长）
+        duration = duration_map.get(self.card_type, timezone.timedelta())
+        return duration
 
     def update_status(self):
         """更新卡状态"""

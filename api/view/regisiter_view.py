@@ -1,4 +1,5 @@
 import json
+import random
 
 from django.contrib.auth import authenticate
 from django.core.validators import validate_email
@@ -10,7 +11,7 @@ from api.function.card import use_card
 from api.function.get_client_ip import get_client_ip
 from api.models import CustomUser
 from api.selfUtils import rsa_decrypt, result
-
+from django.core.exceptions import ObjectDoesNotExist
 
 class regisiterView(TokenObtainPairView):
     def post(self, request, *args, **kwargs):
@@ -46,23 +47,35 @@ class regisiterView(TokenObtainPairView):
             password=password,
             invited_parent=invite_code,
             regisiter_ip=ip,
+            user_code=generate_unique_user_code()
         )
         user.save()
-        if card_code!="":
-            res = use_card(card_code, user)
-            res = json.loads(res)
+
         try:
             refresh = RefreshToken.for_user(user)
             response_data = {
                 'refresh': str(refresh),
                 'access': str(refresh.access_token)
             }
-            if res != "":
-                res["auth"] = response_data
-                resText = res
-            else:
-                resText = result.success(response_data)
+            if card_code != "" and card_code is not None:
+                print(card_code)
+                res = use_card(card_code, user)
+                data = res.data
+                response_data["auth"] = data
+            return result.success(response_data)
+
         except Exception as e:
             return result.fail("生成令牌失败", code=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        # 5. 返回成功响应
-        return resText
+
+def generate_unique_user_code():
+    """生成唯一的8位数字用户编码"""
+    while True:
+        # 生成8位随机数字字符串
+        code = ''.join(random.choices('0123456789', k=8))
+        try:
+            # 检查是否已存在
+            CustomUser.objects.get(user_code=code)
+        except ObjectDoesNotExist:
+            # 不存在，返回该编码
+            return code
+        # 如果存在，继续循环
