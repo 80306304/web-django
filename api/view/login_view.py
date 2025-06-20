@@ -5,6 +5,7 @@ from rest_framework import status
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenObtainPairView
 
+from api.function.get_client_ip import get_client_ip
 from api.selfUtils import rsa_decrypt, result
 
 
@@ -19,6 +20,7 @@ class loginView(TokenObtainPairView):
             decrypted_data = json.loads(decrypted_data)
             username = decrypted_data.get("username")
             password = decrypted_data.get("password")
+            ip = get_client_ip(request)
             print(f"解密后的数据: {decrypted_data}")
         except Exception as e:
             return result.fail('无效的加密数据', code=status.HTTP_400_BAD_REQUEST)
@@ -28,6 +30,8 @@ class loginView(TokenObtainPairView):
         if not user:
             return result.fail("用户名或密码错误", code=status.HTTP_401_UNAUTHORIZED)
 
+        user.login_ip = ip
+        user.save()
         # 4. 生成 JWT（使用 simplejwt 的 RefreshToken 类）
         try:
             refresh = RefreshToken.for_user(user)
