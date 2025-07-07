@@ -7,9 +7,10 @@ def crypt():
     param = {
         "password":"liyx1111",
         "email":"111111@qq.com",
-
+        
         "invite_code":"12345678"
     }
+    param = { "username": "liyx", "password": "liyx" }
     # param = {
     #     "count":"3",
     #     "type":"week"

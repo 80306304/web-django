@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'rest_framework_simplejwt'
+    'rest_framework_simplejwt',
+    'corsheaders',
 ]
 
 AUTH_USER_MODEL = 'api.CustomUser'
@@ -52,8 +53,15 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",  # 开发环境常见端口
+    "http://127.0.0.1:3000",
+    "http://203.2.160.91:3000",
+]
+CORS_ALLOW_ALL_ORIGINS = True
 # DRF 全局配置：使用 JWT 作为认证方式
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -93,11 +101,24 @@ WSGI_APPLICATION = 'DjangoProject1.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
-
+# 默认的sqlite配置
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',  # 指定PostgreSQL引擎
+        'NAME': 'postgres',               # 数据库名
+        'USER': 'liyx',                    # 数据库用户名
+        'PASSWORD': 'Lyx121216',                # 数据库密码
+        'HOST': '203.2.160.91',                        # 数据库主机（本地填localhost）
+        'PORT': '5432',                             # 数据库端口（默认5432）
+        'OPTIONS': {
+            'client_encoding': 'UTF8',              # 设置客户端编码为UTF-8
+        },
     }
 }
 
