@@ -33,7 +33,7 @@ class createCard(TokenObtainPairView):
         if(count <= 0):result.fail('最少生成一张卡密')
 
         ketList = generate_card_codes(count)
-        store_card_codes(ketList,type)
+        store_card_codes(ketList,type,user)
 
         return result.success(ketList)
 
@@ -42,7 +42,6 @@ class createCard(TokenObtainPairView):
 class useCard(TokenObtainPairView):
     def post(self, request, *args, **kwargs):
         user = request.user
-
         encrypted_data = request.data.get('data')
         try:
             decrypted_data = rsa_decrypt(encrypted_data)
@@ -52,4 +51,33 @@ class useCard(TokenObtainPairView):
         except Exception as e:
             return result.fail('无效的加密数据', code=status.HTTP_400_BAD_REQUEST)
         res = use_card(key, user)
+        return res
+
+@authentication_classes([JWTAuthentication])
+@permission_classes([IsAuthenticated])
+class getCard(TokenObtainPairView):
+    def post(self, request, *args, **kwargs):
+        user = request.user
+        if user.user_level<=2:
+            return result.fail("暂无权限")
+
+        res = get_all_cards()
+        return res
+
+@authentication_classes([JWTAuthentication])
+@permission_classes([IsAuthenticated])
+class delCard(TokenObtainPairView):
+    def post(self, request, *args, **kwargs):
+        user = request.user
+        if user.user_level<=2:
+            return result.fail("暂无权限")
+        encrypted_data = request.data.get('data')
+        try:
+            decrypted_data = rsa_decrypt(encrypted_data)
+            decrypted_data = json.loads(decrypted_data)
+            key = decrypted_data.get("key")
+            print(f"解密后的值{decrypted_data}")
+        except Exception as e:
+            return result.fail('无效的加密数据', code=status.HTTP_400_BAD_REQUEST)
+        res = del_card(key)
         return res

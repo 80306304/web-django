@@ -8,6 +8,7 @@ from django.utils import timezone
 
 from api.models import Card, CustomUser
 from api.selfUtils import result
+from api.serializers import CardSerializer
 
 
 # 单生成卡密
@@ -37,7 +38,7 @@ def generate_card_codes(count: int, check_unique: bool = True) -> list[str]:
     return generated_codes
 
 #将卡密存入数据库
-def store_card_codes(codes: list[str], card_type: str="hour") -> None:
+def store_card_codes(codes: list[str], card_type: str="hour",user:str="") -> None:
     """
     将生成的卡密批量存入数据库（自动处理过期时间和状态）
 
@@ -53,7 +54,8 @@ def store_card_codes(codes: list[str], card_type: str="hour") -> None:
             key=code,
             card_type=card_type,
             status="unused",  # 初始状态为未使用
-            created_time=timezone.now()
+            created_time=timezone.now(),
+            creator_id=user.id
         )
 
         # 手动触发自定义逻辑（与 save 方法中的逻辑一致）
@@ -127,7 +129,19 @@ def use_card(key,user:CustomUser):
             user.vip_time = card.calculate_expiration()
         else:
             user.vip_time = user.vip_time + card.calculate_duration()
-        card.user_id = user.id
+        card.user_id = user.username
         card.save()
         user.save()
     return result.success(f"卡密已使用,到期时间：{user.vip_time}")
+
+def get_all_cards():
+    serializer = CardSerializer(Card.objects.all(), many=True)
+    return result.success(serializer.data)
+
+def del_card(key):
+    try:
+        card = Card.objects.get(key=key)
+        card.delete()
+        return result.success("删除成功")
+    except Card.DoesNotExist:
+        return result.fail("删除失败")

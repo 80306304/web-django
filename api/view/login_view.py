@@ -2,11 +2,16 @@ import json
 
 from django.contrib.auth import authenticate
 from rest_framework import status
+from rest_framework.decorators import authentication_classes, permission_classes
+from rest_framework.permissions import IsAuthenticated
+from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenObtainPairView
 
 from api.function.get_client_ip import get_client_ip
+from api.models import CustomUser
 from api.selfUtils import rsa_decrypt, result
+from api.serializers import UserSerializer
 
 
 class loginView(TokenObtainPairView):
@@ -29,7 +34,6 @@ class loginView(TokenObtainPairView):
         user = authenticate(username=username, password=password)
         if not user:
             return result.fail("用户名或密码错误", code=status.HTTP_401_UNAUTHORIZED)
-
         user.login_ip = ip
         user.save()
         # 4. 生成 JWT（使用 simplejwt 的 RefreshToken 类）
@@ -44,3 +48,13 @@ class loginView(TokenObtainPairView):
 
         # 5. 返回成功响应
         return result.success(response_data)
+
+@authentication_classes([JWTAuthentication])
+@permission_classes([IsAuthenticated])
+class getUsers(TokenObtainPairView):
+    def post(self, request, *args, **kwargs):
+        user = request.user
+        if user.user_level <= 2:
+            return result.fail("暂无权限")
+        serializer = UserSerializer(CustomUser.objects.all(), many=True)
+        return result.success(serializer.data)

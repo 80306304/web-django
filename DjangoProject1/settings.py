@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-3u^_-@cyuq-k1647hyq$v5xn#66x0@e1z30j5xdt9#!pi2bp7q
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -56,11 +56,11 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
 ]
 
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",  # 开发环境常见端口
-    "http://127.0.0.1:3000",
-    "http://203.2.160.91:3000",
-]
+# CORS_ALLOWED_ORIGINS = [
+#     "http://localhost:3000",  # 开发环境常见端口
+#     "http://127.0.0.1:3000",
+#     "http://203.2.160.91:8000",
+# ]
 CORS_ALLOW_ALL_ORIGINS = True
 # DRF 全局配置：使用 JWT 作为认证方式
 REST_FRAMEWORK = {
@@ -68,7 +68,25 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     )
 }
-
+CORS_ALLOW_METHODS = [
+    "DELETE",
+    "GET",
+    "OPTIONS",
+    "PATCH",
+    "POST",
+    "PUT",
+]
+CORS_ALLOW_HEADERS = [
+    "accept",
+    "accept-encoding",
+    "authorization",
+    "content-type",
+    "dnt",
+    "origin",
+    "user-agent",
+    "x-csrftoken",
+    "x-requested-with",
+]
 # JWT 自定义配置（可选，不配置则使用默认值）
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(days=1),  # 访问 token 有效期
