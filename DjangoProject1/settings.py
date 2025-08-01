@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     'corsheaders',
+    'django_celery_results',
 ]
 
 AUTH_USER_MODEL = 'api.CustomUser'
@@ -224,3 +225,11 @@ JQiIp2r/CDrj8u95SBy/6rzv/EYJZTeGHESABgcZPvwVjo08/Ii/FRvVTD4q9SOq
 APYje30GdGdLBq7cpjCl/bALkeinuqxLW4dWcpbxmDC6hKKaFMM=
 -----END RSA PRIVATE KEY-----
 '''
+# 配置 RabbitMQ 作为 Celery 的 Broker
+CELERY_BROKER_URL = 'amqp://liyx:liyx@203.2.160.91:5672//'  # 格式：amqp://用户名:密码@主机:端口/虚拟主机
+# 如果使用默认配置（guest/guest，本地），则简化为：
+# CELERY_BROKER_URL = 'amqp://localhost:5672//'
+
+# 配置任务结果存储（使用 django-celery-results）
+CELERY_RESULT_BACKEND = 'django-db'  # 存储到 Django 数据库
+CELERY_RESULT_SERIALIZER = 'json'  # 结果序列化格式

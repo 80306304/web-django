@@ -129,7 +129,8 @@ def use_card(key,user:CustomUser):
             user.vip_time = card.calculate_expiration()
         else:
             user.vip_time = user.vip_time + card.calculate_duration()
-        card.user_id = user.username
+        card.user_id = user.id
+        user.level = "2"
         card.save()
         user.save()
     return result.success(f"卡密已使用,到期时间：{user.vip_time}")

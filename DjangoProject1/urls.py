@@ -25,6 +25,7 @@ from api.view.regisiter_view import regisiterView
 from api.view.test_view import test_f
 
 from api.view.varifyVip_view import varifyVip
+from api.views import trigger_task
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -38,4 +39,8 @@ urlpatterns = [
     path('api/user/getCards/', getCard.as_view(), name='varify'),
     path('api/user/delCard/', delCard.as_view(), name='varify'),
     path('api/user/getUsers/', getUsers.as_view(), name='varify'),
+    path('api/user/updateUser/', updateUser.as_view(), name='varify'),
+    path('api/user/addUser/', addUser.as_view(), name='varify'),
+    path('api/trigger/', trigger_task, name='trigger-task'),
+
 ]
