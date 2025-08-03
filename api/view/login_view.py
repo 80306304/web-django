@@ -9,7 +9,6 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenObtainPairView
-
 from api.function.get_client_ip import get_client_ip
 from api.models import CustomUser
 from api.selfUtils import rsa_decrypt, result

@@ -1,19 +1,19 @@
 from celery import shared_task
 import time
 
+from api.activity.game1 import get_ad
 from api.function.sendPush import sendMsg
 
 
 @shared_task
-def process_data(data):
+def process_data(gameToken,uuid,pushToken:str=None):
     """处理数据的异步任务"""
-    time.sleep(5)  # 模拟耗时操作
-    result = f"Processed: {data.upper()}"
+    result = get_ad(gameToken,uuid,pushToken)
     return result
 
 @shared_task
-def send_notification(token, message):
+def send_notification(token):
     """发送通知的异步任务"""
     # 实际应用中这里会连接邮件服务或推送服务
-    sendMsg(token,"任务已开启")
-    return f"Notification sent to user {user_id}: {message}"
+
+    return sendMsg(token,"任务状态","任务已开始运行")

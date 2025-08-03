@@ -18,6 +18,7 @@ from django.contrib import admin
 from django.urls import path
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView, TokenVerifyView
 
+from api.view.async_view import trigger_task
 from api.view.card_view import *
 from api.view.crypto_view import get_crypto
 from api.view.login_view import *
@@ -25,7 +26,7 @@ from api.view.regisiter_view import regisiterView
 from api.view.test_view import test_f
 
 from api.view.varifyVip_view import varifyVip
-from api.views import trigger_task
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -41,6 +42,6 @@ urlpatterns = [
     path('api/user/getUsers/', getUsers.as_view(), name='varify'),
     path('api/user/updateUser/', updateUser.as_view(), name='varify'),
     path('api/user/addUser/', addUser.as_view(), name='varify'),
-    path('api/trigger/', trigger_task, name='trigger-task'),
+    path('api/trigger/', trigger_task.as_view(), name='trigger-task'),
 
 ]
