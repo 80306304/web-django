@@ -28,8 +28,8 @@ class trigger_task(TokenObtainPairView):
 
         if not gameToken or not gameId:
             return result.fail("缺少参数")
-        if pushToken:
-            task2 = send_notification.delay(pushToken)
+        # if pushToken:
+            # task2 = send_notification.delay(pushToken)
         task1 = process_data.delay(gameToken,gameId,pushToken)
 
         return result.success(f"任务已开始，任务ID{task1.id}")

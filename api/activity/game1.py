@@ -4,6 +4,8 @@ from api.function.sendPush import sendMsg
 
 
 def get_ad(token,uuid,pushToken:str=None):
+    if pushToken:
+        sendMsg(pushToken, "任务开始通知", "广告任务已开始")
     while True:
         time.sleep(1)
         url = f"https://game.xywzzj.com/gm1/kind11/xiadan?uuid={uuid}&token={token}&version=1.0.0&time={time.time()}"
@@ -22,7 +24,7 @@ def get_ad(token,uuid,pushToken:str=None):
         if res.get("type") == 0 and res.get("win").get("msg")!="请勿重复点击":
             print("广告已看完")
             if pushToken:
-                sendMsg(pushToken, "任务进度通知","广告任务已完成")
+                sendMsg(pushToken, "任务完成通知","广告任务已完成")
             return "success"
             break;
         else:
