@@ -233,3 +233,4 @@ CELERY_BROKER_URL = 'amqp://liyx:liyx@203.2.160.91:5672//'  # 格式：amqp://�
 # 配置任务结果存储（使用 django-celery-results）
 CELERY_RESULT_BACKEND = 'django-db'  # 存储到 Django 数据库
 CELERY_RESULT_SERIALIZER = 'json'  # 结果序列化格式
+APPEND_SLASH = False  # 默认是True

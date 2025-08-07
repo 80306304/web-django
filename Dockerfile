@@ -9,6 +9,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends gcc python3-dev
 COPY requirements.txt .
 RUN pip install --no-cache-dir -i https://mirrors.aliyun.com/pypi/simple/ -r requirements.txt
 
+# 复制启动脚本并赋予执行权限
+COPY start.bash .
+RUN chmod u+x start.bash
+
 COPY . .
 
 EXPOSE 8000

@@ -18,7 +18,7 @@ from django.contrib import admin
 from django.urls import path
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView, TokenVerifyView
 
-from api.view.async_view import trigger_task
+from api.view.async_view import *
 from api.view.card_view import *
 from api.view.crypto_view import get_crypto
 from api.view.login_view import *
@@ -34,7 +34,7 @@ urlpatterns = [
     path('api/user/regisiter/', regisiterView.as_view(), name='user_regisiter'),
     path('api/user/varifyVip/', varifyVip.as_view(), name='user_varify'),
     path('api/user/getCrypto/', get_crypto.as_view(), name='get_crypto'),
-    path('api/user/test/', test_f.as_view(), name='test'),
+    path('api/user/test', test_f.as_view(), name='test'),
     path('api/user/createCard/', createCard.as_view(), name='varify'),
     path('api/user/useCard/', useCard.as_view(), name='varify'),
     path('api/user/getCards/', getCard.as_view(), name='varify'),
@@ -43,5 +43,5 @@ urlpatterns = [
     path('api/user/updateUser/', updateUser.as_view(), name='varify'),
     path('api/user/addUser/', addUser.as_view(), name='varify'),
     path('api/trigger/', trigger_task.as_view(), name='trigger-task'),
-
+    path('api/playGame/', play_game.as_view(), name='play-game'),
 ]
