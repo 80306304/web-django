@@ -16,4 +16,4 @@ def send_notification(token):
     """发送通知的异步任务"""
     # 实际应用中这里会连接邮件服务或推送服务
 
-    return sendMsg(token,"任务状态","任务已开始运行")
+    return sendMsg(token,"任务运行通知","任务已开始运行")

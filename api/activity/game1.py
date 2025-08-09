@@ -18,11 +18,10 @@ def get_ad(token,uuid,pushToken:str=None):
         url= f"https://game.xywzzj.com/gm1/kind11/success?uuid={uuid}&token={token}&version=1.0.0&time={time.time()}"
         data = {"order11Id":order11Id}
         res = requests.post(url, headers=headers, json=data).json()
-        print(res.get("win").get("msg")!="请勿重复点击")
         if res.get("type") == 0 and res.get("win").get("msg")!="请勿重复点击":
             print("广告已看完")
             if pushToken:
-                sendMsg(pushToken, "任务进度通知","广告任务已完成")
+                sendMsg(pushToken, "任务完成通知","广告任务已完成")
             return "success"
             break;
         else:
