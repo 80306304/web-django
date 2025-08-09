@@ -12,14 +12,12 @@ def process_data(gameToken,uuid,pushToken:str=None):
     return result
 
 @shared_task
+def play_game(gameToken,uuid,pushToken:str=None):
+    return finish_game(gameToken,uuid,pushToken)
+
+@shared_task
 def send_notification(token):
     """发送通知的异步任务"""
     # 实际应用中这里会连接邮件服务或推送服务
 
     return sendMsg(token,"任务状态","任务已开始运行")
-
-@shared_task
-def play_game(gameToken,uuid,pushToken:str=None):
-
-    return get_ad(gameToken,uuid,pushToken)
-

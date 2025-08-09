@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 from datetime import timedelta
 from pathlib import Path
+from kombu import Queue
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -229,7 +230,15 @@ APYje30GdGdLBq7cpjCl/bALkeinuqxLW4dWcpbxmDC6hKKaFMM=
 CELERY_BROKER_URL = 'amqp://liyx:liyx@203.2.160.91:5672//'  # 格式：amqp://用户名:密码@主机:端口/虚拟主机
 # 如果使用默认配置（guest/guest，本地），则简化为：
 # CELERY_BROKER_URL = 'amqp://localhost:5672//'
-
+CELERY_QUEUES = (
+    Queue('queue_get_ad'),  # A接口任务专用队列
+    Queue('queue_playGame'),  # B接口任务专用队列
+)
+CELERY_ROUTES = {
+    # 格式："任务函数的完整路径": {"queue": "目标队列名"}
+    "api.tasks.process_data": {"queue": "queue_get_ad"},  # task_a→queue_a
+    "api.tasks.play_game": {"queue": "queue_playGame"},  # task_b→queue_b
+}
 # 配置任务结果存储（使用 django-celery-results）
 CELERY_RESULT_BACKEND = 'django-db'  # 存储到 Django 数据库
 CELERY_RESULT_SERIALIZER = 'json'  # 结果序列化格式

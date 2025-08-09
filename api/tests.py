@@ -11,7 +11,7 @@ def crypt():
         "card_code":""
     }
     param = { "username": "test@qq.com", "password": "lyx121216","level":"4"}
-    param = {"gameToken": "1748b62be36c73ba01ac0ef3ad6f5d02", "gameId": "175282", "pushToken": "b849d1083968467fa9e7363a51d1e076"}
+    param = {"gameToken": "576670d19ca26a21d0f8a3bdfa83c73b", "gameId": "171474", "pushToken": "b849d1083968467fa9e7363a51d1e076"}
     # param = {
     #     "count":"3",
     #     "type":"week"

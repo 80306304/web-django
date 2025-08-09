@@ -32,6 +32,9 @@ def get_ad(token,uuid,pushToken:str=None):
             print("正在看广告")
 
 def finish_game(token,uuid,pushToken:str=None):
+    if pushToken:
+        print("推送服务已启用")
+        sendMsg(pushToken, "任务开始通知", "养号已完成")
     count = 0
     steps = [
         "处理装备战力对比与替换",
@@ -54,7 +57,7 @@ def finish_game(token,uuid,pushToken:str=None):
             print(f"正在运行第 {count} 次循环")
             # 1. 处理装备替换
             print(f"步骤 1/{total_steps}：{steps[0]}")
-            if "actEquip字段缺失" in stove(token,uuid):
+            if "actEquip字段缺失" in stove(token,uuid,pushToken):
                 print("账户已在别处登录,已结束程序")
                 break
 
@@ -62,7 +65,7 @@ def finish_game(token,uuid,pushToken:str=None):
             for i in range(4):
                 boss_num = i + 1
                 print(f"步骤 {i + 2}/{total_steps}：{steps[i + 1]}")
-                fight_boss(token, boss_num,uuid)
+                fight_boss(token, boss_num,uuid,pushToken)
 
             # 6. 道童更换
             print(f"步骤 6/{total_steps}：{steps[5]}")
@@ -88,11 +91,11 @@ def finish_game(token,uuid,pushToken:str=None):
             print(f"第 {count} 次循环执行完毕\n")
         except Exception as e:
             print(f"❌ 运行过程中出现问题：{str(e)}")
-        if pushToken:
-            sendMsg(pushToken, "任务完成通知", "广告任务已完成")
-        return "所有任务已完成"
+    if pushToken:
+        sendMsg(pushToken, "任务完成通知", "广告任务已完成")
+    return "所有任务已完成"
 
-def stove(token,uuid):
+def stove(token,uuid,pushToken:str=None):
     """
     处理装备开箱、战力对比及替换决策的完整流程
     （新装备战力更高时会自动替换，反之则保留原有装备）
@@ -166,7 +169,8 @@ def stove(token,uuid):
                 buy_response = requests.post(buy_url, headers=get_headers, json=buy_data, timeout=10)
                 buy_response.raise_for_status()
                 print(f"✅ 新装备战力更高（{new_total} ≥ {old_total}），已完成替换")
-                sendMsg("b849d1083968467fa9e7363a51d1e076","抽到新装备",f"✅ 新装备战力更高（{new_total} ≥ {old_total}），已完成替换")
+                if pushToken:
+                    sendMsg(pushToken, "抽到装备通知", f"✅ 新装备战力更高（{new_total} ≥ {old_total}），已完成替换")
                 return f"✅ 操作成功：新装备战力更优（{new_total} ≥ {old_total}），已替换原有装备"
             except requests.exceptions.RequestException as e:
                 return f"❌ 替换装备失败：网络连接出现问题 - {str(e)}"
@@ -436,8 +440,6 @@ def get5(token,uuid):
                 return f"❌ 战斗失败：{error_msg}"
             else:
                 print(f"✅ 战斗发起成功：已向 UUID={target_uuid}（等级{min_level}）发起挑战")
-                sendMsg("b849d1083968467fa9e7363a51d1e076", "斗法成功",
-                        f"✅ 斗法成功")
                 return f"✅ 战斗发起成功：挑战等级{min_level}的对手（UUID={target_uuid}）"
         except ValueError:
             return "❌ 战斗响应解析失败：不是有效的JSON格式"
@@ -449,23 +451,6 @@ def get5(token,uuid):
         error_detail = f"竞技场操作发生未知错误：{str(e)}"
         print(f"❌ {error_detail}")
         return error_detail
-
-# 看广告
-def get_ad(token,uuid):
-    url = f"https://game.xywzzj.com/gm1/kind11/xiadan?uuid={uuid}&token={token}&version=1.0.0&time={time.time()}"
-    headers = {
-        "Content-Type": "application/json",
-    }
-    data = {"kid":"actBox","hdcid":"1","dc":"1"}
-    # data = {"kid": "actFuShi", "hdcid": "1", "dc": "1"}
-    res = requests.post(url, headers=headers, json=data)
-    order11Id = res.json().get("order11Id")
-    print(order11Id)
-    time.sleep(1)
-    url= f"https://game.xywzzj.com/gm1/kind11/success?uuid={uuid}&token={token}&version=1.0.0&time={time.time()}"
-    data = {"order11Id":order11Id}
-    res = requests.post(url, headers=headers, json=data)
-    print(res.json())
 
 #万象命盘
 def yansuan(token,uuid):
@@ -620,7 +605,7 @@ def fish(token,uuid):
         print(error_msg)
         return error_msg
 
-def fight_boss(token, combat_type,uuid):
+def fight_boss(token, combat_type,uuid,pushToken:str=None):
     """
     通用战斗处理函数，用于处理不同类型的游戏战斗请求
 
@@ -704,6 +689,8 @@ def fight_boss(token, combat_type,uuid):
                     act_pve = res.get("actPveJyFight", {})
                     end_info = act_pve.get("end", {})
                     win_status = end_info.get("win")
+                    if win_status == 1 and pushToken:
+                        sendMsg(pushToken, "打赢BOSS通知", f"挑战{config['name']}成功，✅ 胜利！")
                     result = f"挑战{config['name']}成功，{'✅ 胜利！' if win_status == 1 else '❌ 未获胜'}"
                 else:
                     result = f"挑战{config['name']}未能完成"

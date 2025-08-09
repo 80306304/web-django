@@ -7,7 +7,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenObtainPairView
-from ..tasks import process_data,send_notification
+from ..tasks import process_data, send_notification, play_game
 
 from api.selfUtils import rsa_decrypt, result
 
@@ -34,7 +34,7 @@ class trigger_task(TokenObtainPairView):
 
         return result.success(f"任务已开始，任务ID{task1.id}")
 
-class play_game(TokenObtainPairView):
+class playGame(TokenObtainPairView):
     def post(self, request, *args, **kwargs):
         try:
             encrypted_data = request.data.get('data')

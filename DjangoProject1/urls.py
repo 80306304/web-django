@@ -43,5 +43,5 @@ urlpatterns = [
     path('api/user/updateUser/', updateUser.as_view(), name='varify'),
     path('api/user/addUser/', addUser.as_view(), name='varify'),
     path('api/trigger/', trigger_task.as_view(), name='trigger-task'),
-    path('api/playGame/', play_game.as_view(), name='play-game'),
+    path('api/playGame/', playGame.as_view(), name='play-game'),
 ]
