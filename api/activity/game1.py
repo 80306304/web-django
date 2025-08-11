@@ -1,3 +1,4 @@
+import json
 import random
 import time
 import requests
@@ -14,7 +15,6 @@ def get_ad(token,uuid,pushToken:str=None):
             "Content-Type": "application/json",
         }
         data = {"kid":"actBox","hdcid":"1","dc":"1"}
-
         res = requests.post(url, headers=headers, json=data)
         order11Id = res.json().get("order11Id")
         print(res.json())
@@ -31,17 +31,32 @@ def get_ad(token,uuid,pushToken:str=None):
         else:
             print("正在看广告")
 
-def finish_game(token,uuid,pushToken:str=None):
+
+def finish_game(token, uuid, pushToken: str = None):
     if pushToken:
-        print("推送服务已启用")
-        sendMsg(pushToken, "任务开始通知", "养号已完成")
+        print("📱 推送服务已启用")
+        text = sendMsg(pushToken, "任务开始通知", "养号任务已启动")
+        print(text)
+
     count = 0
+    # 更新步骤列表，包含新增的函数操作
     steps = [
         "处理装备战力对比与替换",
+        "每日广告领取",
+        "获取气源",
+        "获取轮回",
+        "获取经营任务",
+        "每日购买",
+        "查询充值天数",
+        "每日回归奖励",
+        "玉石兑换金币",
+        "升级操作",
         "挑战BOSS 1",
         "挑战BOSS 2",
         "挑战BOSS 3",
         "挑战BOSS 4",
+        "挑战BOSS 5",
+        "挑战BOSS 6",
         "道童更换操作",
         "万象演算流程",
         "任务奖励查询",
@@ -49,50 +64,94 @@ def finish_game(token,uuid,pushToken:str=None):
         "斗法"
     ]
     total_steps = len(steps)
+
     for i in range(3000):
         try:
             time.sleep(1)
             count += 1
+
             # 循环次数提示
-            print(f"正在运行第 {count} 次循环")
+            print(f"🔄 正在运行第 {count} 次循环")
+
             # 1. 处理装备替换
-            print(f"步骤 1/{total_steps}：{steps[0]}")
-            if "actEquip字段缺失" in stove(token,uuid,pushToken):
-                print("账户已在别处登录,已结束程序")
+            print(f"📝 步骤 1/{total_steps}：{steps[0]}")
+            stoveText = stove(token, uuid, pushToken)
+            print(stoveText)
+            if "actEquip字段缺失" in stoveText:
+                print("⚠️ 账户已在别处登录，已结束程序")
                 break
 
-            # 2-5. 挑战BOSS
-            for i in range(4):
+            # 2. 每日广告
+            print(f"📝 步骤 2/{total_steps}：{steps[1]}")
+            daily_ad(token, uuid)
+
+            # 3. 获取气源
+            print(f"📝 步骤 3/{total_steps}：{steps[2]}")
+            get_qi_yuan(token, uuid)
+
+            # 4. 获取轮回
+            print(f"📝 步骤 4/{total_steps}：{steps[3]}")
+            get_lun_hui(token, uuid)
+
+            # 5. 获取经营任务
+            print(f"📝 步骤 5/{total_steps}：{steps[4]}")
+            get_jy_task(token, uuid)
+
+            # 6. 每日购买
+            print(f"📝 步骤 6/{total_steps}：{steps[5]}")
+            get_day_buy(token, uuid)
+
+            # 7. 查询充值天数
+            print(f"📝 步骤 7/{total_steps}：{steps[6]}")
+            get_charge_days(token, uuid)
+
+            # 8. 每日回归
+            print(f"📝 步骤 8/{total_steps}：{steps[7]}")
+            get_day_hui(token, uuid)
+
+            # 9. 玉石兑换金币
+            print(f"📝 步骤 9/{total_steps}：{steps[8]}")
+            jade2coin(token, uuid)
+
+            # 10. 升级操作
+            print(f"📝 步骤 10/{total_steps}：{steps[9]}")
+            levelFlag = upgrade(token, uuid)
+            if levelFlag == True:
+                get_ad(token, uuid, pushToken)
+            # 11-14. 挑战BOSS
+            for i in range(6):
                 boss_num = i + 1
-                print(f"步骤 {i + 2}/{total_steps}：{steps[i + 1]}")
-                fight_boss(token, boss_num,uuid,pushToken)
+                print(f"📝 步骤 {i + 11}/{total_steps}：{steps[i + 10]}")
+                fight_boss(token, boss_num, uuid, pushToken)
 
-            # 6. 道童更换
-            print(f"步骤 6/{total_steps}：{steps[5]}")
-            steal(token,uuid)
+            # 15. 道童更换
+            print(f"📝 步骤 15/{total_steps}：{steps[14]}")
+            steal(token, uuid)
 
-            # 7. 万象演算
-            print(f"步骤 7/{total_steps}：{steps[6]}")
-            yansuan(token,uuid)
+            # 16. 万象演算
+            print(f"📝 步骤 16/{total_steps}：{steps[15]}")
+            yansuan(token, uuid)
 
-            # 8. 任务奖励
-            print(f"步骤 8/{total_steps}：{steps[7]}")
-            rwd(token,uuid)
+            # 17. 任务奖励
+            print(f"📝 步骤 17/{total_steps}：{steps[16]}")
+            rwd(token, uuid)
 
-            # 9. 钓鱼
-            print(f"步骤 9/{total_steps}：{steps[8]}")
-            fish(token,uuid)
+            # 18. 钓鱼
+            print(f"📝 步骤 18/{total_steps}：{steps[17]}")
+            fish(token, uuid)
 
-            # 10. 斗法
-            print(f"步骤 10/{total_steps}：{steps[9]}")
-            get5(token,uuid)
+            # 19. 斗法
+            print(f"📝 步骤 19/{total_steps}：{steps[18]}")
+            get5(token, uuid)
 
             # 循环结束提示
-            print(f"第 {count} 次循环执行完毕\n")
+            print(f"✅ 第 {count} 次循环执行完毕\n")
+
         except Exception as e:
             print(f"❌ 运行过程中出现问题：{str(e)}")
+
     if pushToken:
-        sendMsg(pushToken, "任务完成通知", "广告任务已完成")
+        sendMsg(pushToken, "任务完成通知", "所有养号任务已完成")
     return "所有任务已完成"
 
 def stove(token,uuid,pushToken:str=None):
@@ -605,7 +664,7 @@ def fish(token,uuid):
         print(error_msg)
         return error_msg
 
-def fight_boss(token, combat_type,uuid,pushToken:str=None):
+def fight_boss(token, combat_type, uuid, pushToken: str = None):
     """
     通用战斗处理函数，用于处理不同类型的游戏战斗请求
 
@@ -619,13 +678,11 @@ def fight_boss(token, combat_type,uuid,pushToken:str=None):
             2 - 原BOSS战斗（boss2）
             3 - 原BOSS战斗（boss3）
             4 - 新增PVE战斗（多步流程）
+            5 - 新增PVD战斗（boss4）
+            6 - 新增PVW战斗（boss5）
 
     返回:
         str: 战斗结果信息字符串，包含各步骤执行状态及最终战斗结果
-
-    示例:
-        >>> fight_boss("user_auth_token", 1)
-        "boss1第1步请求成功; 挑战boss1成功，✅ 胜利！"
     """
     # 战斗配置映射：包含基础URL和请求路径（支持单步/多步请求）
     combat_configs = {
@@ -650,12 +707,28 @@ def fight_boss(token, combat_type,uuid,pushToken:str=None):
             "name": "pve战斗",
             "data": [{}, {"ftype": "pve"}],  # 对应步骤的请求数据
             "sleep": 1  # 步骤间等待时间（秒）
+        },
+        # 新增PVD战斗配置（对应文档1的抓包数据）
+        5: {
+            "base_url": "https://game.xywzzj.com",
+            "paths": ["gm1/pvd/fight"],
+            "name": "boss4（pvd）",
+            "data": [{}],  # 空请求体
+            "result_key": "actPvd"  # 响应中战斗结果的键名
+        },
+        # 新增PVW战斗配置（对应文档2的抓包数据）
+        6: {
+            "base_url": "https://game.xywzzj.com",
+            "paths": ["gm1/pvw/fight"],
+            "name": "boss5（pvw）",
+            "data": [{}],  # 空请求体
+            "result_key": "actPvwFight"  # 响应中战斗结果的键名
         }
     }
 
     # 验证战斗类型
     if combat_type not in combat_configs:
-        return f"😮 错误：战斗类型 {combat_type} 不存在哦，请选择1-4之间的类型~"
+        return f"😮 错误：战斗类型 {combat_type} 不存在哦，请选择1-6之间的类型~"
 
     config = combat_configs[combat_type]
     headers = {"Content-Type": "application/json"}
@@ -664,9 +737,8 @@ def fight_boss(token, combat_type,uuid,pushToken:str=None):
     try:
         # 执行多步请求
         for i, path in enumerate(config["paths"]):
-            # 构建URL（注意：第2步pve/fightEnd的uuid为空）
-            uuid_param = f"{uuid}" if i == 0 or combat_type != 4 else ""
-            url = f"{config['base_url']}/{path}?uuid={uuid_param}&token={token}&version=1.0.0&time={time.time()}"
+            # 构建URL（保留uuid参数）
+            url = f"{config['base_url']}/{path}?uuid={uuid}&token={token}&version=1.0.0&time={time.time()}"
 
             # 获取当前步骤的请求数据（默认空字典）
             data = config.get("data", [{}])[i] if config.get("data") else {}
@@ -681,14 +753,20 @@ def fight_boss(token, combat_type,uuid,pushToken:str=None):
                 time.sleep(config["sleep"])
 
         # 处理最终结果（针对有响应解析需求的战斗类型）
-        if combat_type in [1, 2, 3]:
+        if combat_type in [1, 2, 3, 5, 6]:
             # 解析最后一步的响应
             try:
                 res = response.json()
                 if res.get("type") == 1:
-                    act_pve = res.get("actPveJyFight", {})
-                    end_info = act_pve.get("end", {})
+                    # 根据不同战斗类型获取对应的结果字段
+                    if combat_type in [5, 6]:
+                        act_data = res.get(config["result_key"], {})
+                    else:
+                        act_data = res.get("actPveJyFight", {})
+
+                    end_info = act_data.get("end", {})
                     win_status = end_info.get("win")
+
                     if win_status == 1 and pushToken:
                         sendMsg(pushToken, "打赢BOSS通知", f"挑战{config['name']}成功，✅ 胜利！")
                     result = f"挑战{config['name']}成功，{'✅ 胜利！' if win_status == 1 else '❌ 未获胜'}"
@@ -711,3 +789,274 @@ def fight_boss(token, combat_type,uuid,pushToken:str=None):
         error_msg = f"😮 {config['name']}发生意外：{str(e)}"
         print(error_msg)
         return error_msg
+#邮箱收邮件
+def email(token,uuid):
+    try:
+        # 构建请求URL
+        url = f"https://game.xywzzj.com/gm1/mail/rwdAll?uuid={uuid}&token={token}&version=1.0.0&time={time.time()}"
+        headers = {"Content-Type": "application/json"}
+
+        print("📮 正在收取邮箱道具...")
+
+        # 发送请求，设置超时时间为10秒
+        response = requests.post(url, headers=headers, json={}, timeout=10)
+        response.raise_for_status()
+
+        # 解析响应内容
+        try:
+            res = response.json()
+        except ValueError:
+            print("❌ 数据格式错误，无法收取道具")
+            return False
+
+        # 处理业务逻辑
+        if res.get("type") == 1:
+            print("🎉 道具收取成功！")
+            return True
+        else:
+            error_msg = res.get("msg", "未知原因")
+            print(f"😥 收取失败：{error_msg}")
+            return False
+
+    except requests.exceptions.Timeout:
+        print("⏰ 连接超时，请稍后再试")
+    except requests.exceptions.ConnectionError:
+        print("🔌 网络连接失败，请检查网络")
+    except requests.exceptions.HTTPError as e:
+        print(f"❌ 服务器错误：{str(e)}")
+    except Exception as e:
+        print(f"😮 发生错误：{str(e)}")
+#处理广告
+def daily_ad(token,uuid):
+    try:
+        # 创建广告订单
+        url = f"https://game.xywzzj.com/gm1/kind11/xiadan?uuid={uuid}&token={token}&version=1.0.0&time={time.time()}"
+        headers = {"Content-Type": "application/json"}
+        data = {"kid": "hdWelChest", "hdcid": "1", "dc": "1"}
+
+        res = requests.post(url, headers=headers, json=data, timeout=10)
+        order11Id = res.json().get("order11Id")
+        if not order11Id:
+             Exception("获取广告信息失败 😢")
+        # 确认广告观看
+        url = f"https://game.xywzzj.com/gm1/kind11/success?uuid={uuid}&token={token}&version=1.0.0&time={time.time()}"
+        data = {"order11Id": order11Id}
+        res = requests.post(url, headers=headers, json=data, timeout=10).json()
+        win_msg = res.get("win", {}).get("msg", "")
+
+        if res.get("type") == 0 and win_msg != "请勿重复点击":
+            print("🎉 广告已看完，奖励已发放~")
+            return f"{token}任务已完成"
+        elif win_msg == "请勿重复点击":
+            print("⏰ 请不要重复点击哦，稍后再试吧~")
+        else:
+            print("📺 正在观看广告，请稍候...")
+
+    except Exception as e:
+        print(f"❌ 广告操作失败：{str(e)}")
+
+def get_qi_yuan(token, uuid):
+    """获取奇缘免费奖励"""
+    try:
+        url = f"https://game.xywzzj.com/gm1/huodong/qiYuanPayFree?uuid={uuid}&token={token}&version=1.0.0&time={time.time()}"
+        headers = {"Content-Type": "application/json"}
+        data = {"hdcid": "1", "id": "1"}
+
+        res = requests.post(url, headers=headers, json=data, timeout=10)
+        res.raise_for_status()
+        result = res.json()
+
+        if result.get("type") == 1:
+            print("🎁 奇缘奖励领取成功~")
+            return f"{token}奇缘奖励已获取"
+        else:
+            print(f"😥 奇缘奖励领取失败：{result.get('win', {}).get('msg', '未知原因')}")
+            return None
+
+    except Exception as e:
+        print(f"❌ 奇缘操作出错：{str(e)}")
+        
+
+def get_lun_hui(token, uuid):
+    """获取轮回每日奖励"""
+    try:
+        url = f"https://game.xywzzj.com/gm1/huodong/hdLunHuiDailyRwd?uuid={uuid}&token={token}&version=1.0.0&time={time.time()}"
+        headers = {"Content-Type": "application/json"}
+        data = {"hdcid": "4"}
+
+        res = requests.post(url, headers=headers, json=data, timeout=10)
+        res.raise_for_status()
+        result = res.json()
+
+        if result.get("type") == 1:
+            print("🎁 轮回每日奖励领取成功~")
+            return f"{token}轮回任务已完成"
+        else:
+            print(f"😥 轮回奖励领取失败：{result.get('win', {}).get('msg', '未知原因')}")
+            return None
+
+    except Exception as e:
+        print(f"❌ 轮回操作出错：{str(e)}")
+        
+
+def get_jy_task(token, uuid):
+    """获取新机缘任务奖励"""
+    try:
+        url = f"https://game.xywzzj.com/gm1/huodong/newjyTaskRwd?uuid={uuid}&token={token}&version=1.0.0&time={time.time()}"
+        headers = {"Content-Type": "application/json"}
+        data = {"hdcid": "1", "dc": "4"}
+
+        res = requests.post(url, headers=headers, json=data, timeout=10)
+        res.raise_for_status()
+        result = res.json()
+
+        if result.get("type") == 1:
+            print("🎁 机缘任务奖励领取成功~")
+            return f"{token}机缘任务已完成"
+        else:
+            print(f"😥 机缘奖励领取失败：{result.get('win', {}).get('msg', '未知原因')}")
+            return None
+
+    except Exception as e:
+        print(f"❌ 机缘操作出错：{str(e)}")
+        
+
+def get_day_buy(token, uuid):
+    """获取每日购买奖励"""
+    try:
+        url = f"https://game.xywzzj.com/gm1/huodong/hdDayBuy?uuid={uuid}&token={token}&version=1.0.0&time={time.time()}"
+        headers = {"Content-Type": "application/json"}
+        data = {"hdcid": "1", "dc": "1"}
+
+        res = requests.post(url, headers=headers, json=data, timeout=10)
+        res.raise_for_status()
+        result = res.json()
+
+        if result.get("type") == 1:
+            print("🎁 每日特惠奖励领取成功~")
+            return f"{token}每日购买任务已完成"
+        else:
+            print(f"😥 每日特惠领取失败：{result.get('win', {}).get('msg', '未知原因')}")
+            return None
+
+    except Exception as e:
+        print(f"❌ 每日购买操作出错：{str(e)}")
+        
+
+def get_charge_days(token, uuid):
+    """获取累充每日奖励"""
+    try:
+        url = f"https://game.xywzzj.com/gm1/huodong/hdChargeDaysDailyRwd?uuid={uuid}&token={token}&version=1.0.0&time={time.time()}"
+        headers = {"Content-Type": "application/json"}
+        data = {"hdcid": "1"}
+
+        res = requests.post(url, headers=headers, json=data, timeout=10)
+        res.raise_for_status()
+        result = res.json()
+
+        if result.get("type") == 1:
+            print("🎁 累充每日奖励领取成功~")
+            return f"{token}累充任务已完成"
+        else:
+            print(f"😥 累充奖励领取失败：{result.get('win', {}).get('msg', '未知原因')}")
+            return None
+
+    except Exception as e:
+        print(f"❌ 累充操作出错：{str(e)}")
+        
+
+def get_day_hui(token, uuid):
+    """获取每日特惠会奖励"""
+    try:
+        url = f"https://game.xywzzj.com/gm1/huodong/hdDayHuiDailyRwd?uuid={uuid}&token={token}&version=1.0.0&time={time.time()}"
+        headers = {"Content-Type": "application/json"}
+        data = {"hdcid": "1"}
+
+        res = requests.post(url, headers=headers, json=data, timeout=10)
+        res.raise_for_status()
+        result = res.json()
+
+        if result.get("type") == 1:
+            print("🎁 每日特惠会奖励领取成功~")
+            return f"{token}特惠会任务已完成"
+        else:
+            print(f"😥 特惠会奖励领取失败：{result.get('win', {}).get('msg', '未知原因')}")
+            return None
+
+    except Exception as e:
+        print(f"❌ 特惠会操作出错：{str(e)}")
+        
+
+#玉石换金币
+def jade2coin(token, uuid):
+    """用玉石兑换金币，循环直到失败"""
+    url = "https://game.xywzzj.com/gm1/shop/coinBuy"
+    headers = {"Content-Type": "application/json"}
+    data = {"dc": "1", "count": 1}
+    num = 1  # 兑换次数
+    while True:
+        try:
+            req_url = f"{url}?uuid={uuid}&token={token}&version=1.0.0&time={time.time()}"
+            res = requests.post(req_url, headers=headers, json=data, timeout=10)
+            res.raise_for_status()
+            result = res.json()
+
+            if result.get("type") == 1:
+                print(f"✅ 第{num}次兑换成功")
+                num += 1
+                time.sleep(1)
+            else:
+                fail_msg = result.get("win", {}).get("msg", ["兑换失败"])[0]
+                print(f"❌ 第{num}次兑换失败：{fail_msg}，停止")
+                break
+
+        except requests.exceptions.RequestException as e:
+            print(f"⚠️ 网络错：{e}，停止")
+            break
+        except Exception as e:
+            print(f"😮 出错：{e}，停止")
+            break
+
+#升级 成功返回True 失败返回False
+def upgrade(token, uuid):
+    """
+    调用升级接口并判断结果
+    返回值：两个接口type均为1时返回True，否则返回0
+    """
+    base_url = "https://game.hzp4687.com/gm1/box"
+    headers = {"Content-Type": "application/json"}
+    success_count = 0  # 记录type=1的接口数量
+
+    for action in ["upLevel", "upStep"]:
+        try:
+            params = {
+                "uuid": uuid,
+                "token": token,
+                "version": "1.0.0",
+                "time": int(time.time())
+            }
+            res = requests.post(
+                f"{base_url}/{action}",
+                params=params,
+                headers=headers,
+                json={}
+            )
+            res.raise_for_status()
+            response_data = res.json()
+
+            # 检查业务状态type是否为1
+            if response_data.get("type") == 1:
+                success_count += 1
+                print(f"✅升级失败")
+            else:
+                print(f"✅升级完成")
+
+        except json.JSONDecodeError:
+            print(f"{action} 响应格式错误 ❌")
+        except requests.exceptions.HTTPError:
+            print(f"{action} HTTP请求失败 ❌")
+        except Exception as e:
+            print(f"{action} 发生错误 ❌：{str(e)[:10]}")
+
+    # 只有两个接口都成功时返回True，否则返回0
+    return True if success_count == 2 else 0
