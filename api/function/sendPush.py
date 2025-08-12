@@ -10,4 +10,5 @@ def sendMsg(token,title,content):
     }
     body = json.dumps(data).encode(encoding='utf-8')
     headers = {'Content-Type': 'application/json'}
-    requests.post(url, data=body, headers=headers)
+    res = requests.post(url, data=body, headers=headers)
+    return res.json()

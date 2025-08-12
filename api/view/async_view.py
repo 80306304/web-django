@@ -7,7 +7,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenObtainPairView
-from ..tasks import process_data, send_notification, play_game
+from ..tasks import *
 
 from api.selfUtils import rsa_decrypt, result
 
@@ -28,8 +28,11 @@ class trigger_task(TokenObtainPairView):
 
         if not gameToken or not gameId:
             return result.fail("缺少参数")
-        # if pushToken:
-            # task2 = send_notification.delay(pushToken)
+        print("=== 调试 Celery 任务路由 ===")
+        print(f"process_data.name = {process_data.name}")
+        print(f"process_data.app.main = {process_data.app.main}")
+        print(f"process_data.app.conf.task_routes = {process_data.app.conf.task_routes}")
+        print("==========================")
         task1 = process_data.delay(gameToken,gameId,pushToken)
 
         return result.success(f"任务已开始，任务ID{task1.id}")
@@ -49,6 +52,12 @@ class playGame(TokenObtainPairView):
 
         if not gameToken or not gameId:
             return result.fail("缺少参数")
-        task1 = play_game.delay(gameToken,gameId,pushToken)
+        print("=== 调试 Celery 任务路由 ===")
+        print(f"play_game.name = {play_game.name}")
+        print(f"play_game.app.main = {play_game.app.main}")
+        print(f"play_game.app.conf.task_routes = {play_game.app.conf.task_routes}")
+        print("==========================")
+
+        task1 = play_game.delay(gameToken, gameId, pushToken)
 
         return result.success(f"任务已开始，任务ID{task1.id}")

@@ -1,23 +1,21 @@
 from celery import shared_task
-import time
 
 from api.activity.game1 import get_ad, finish_game
-from api.function.sendPush import sendMsg
-
 
 @shared_task
-def process_data(gameToken,uuid,pushToken:str=None):
+def process_data(gameToken, uuid, pushToken: str = None):
     """处理数据的异步任务"""
-    result = get_ad(gameToken,uuid,pushToken)
-    return result
+    try:
+        result = get_ad(gameToken, uuid, pushToken)
+        return {"status": "success", "result": result}
+    except Exception as e:
+        # 可以在这里添加日志记录
+        return {"status": "error", "message": str(e)}
 
 @shared_task
-def play_game(gameToken,uuid,pushToken:str=None):
-    return finish_game(gameToken,uuid,pushToken)
-
-@shared_task
-def send_notification(token):
-    """发送通知的异步任务"""
-    # 实际应用中这里会连接邮件服务或推送服务
-
-    return sendMsg(token,"任务运行通知","任务已开始运行")
+def play_game(gameToken, uuid, pushToken: str = None):
+    try:
+        result = finish_game(gameToken, uuid, pushToken)
+        return {"status": "success", "result": result}
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
