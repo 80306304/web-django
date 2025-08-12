@@ -16,7 +16,7 @@ from api.selfUtils import rsa_decrypt, result
 # @permission_classes([IsAuthenticated])
 class test_f(TokenObtainPairView):
     def post(self, request, *args, **kwargs):
-        # 5. 返回成功响应
+        # 将请求的正文部分转换为响应
         record = json.loads(request.body.decode('utf-8'))
         record = json.dumps(record,indent=4)
         print(record)

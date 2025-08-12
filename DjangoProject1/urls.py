@@ -23,6 +23,7 @@ from api.view.card_view import *
 from api.view.crypto_view import get_crypto
 from api.view.login_view import *
 from api.view.regisiter_view import regisiterView
+from api.view.scriptInfo import *
 from api.view.test_view import test_f
 
 from api.view.varifyVip_view import varifyVip
@@ -44,4 +45,9 @@ urlpatterns = [
     path('api/user/addUser/', addUser.as_view(), name='varify'),
     path('api/trigger/', trigger_task.as_view(), name='trigger-task'),
     path('api/playGame/', playGame.as_view(), name='play-game'),
+    path('api/scripts/list', ScriptListView.as_view(), name='script-list'),
+    # 以下为POST请求操作（带加密处理）
+    path('api/scripts/create', ScriptCreateView.as_view(), name='script-create'),  # 创建脚本
+    path('api/scripts/update', ScriptUpdateView.as_view(), name='script-update'),  # 更新脚本（无URL参数）
+    path('api/scripts/delete', ScriptDeleteView.as_view(), name='script-delete'),  # 逻辑删除脚本（无URL参数）
 ]

@@ -256,3 +256,55 @@ class Card(models.Model):
             return False
         return timezone.now() > self.expired_time if self.expired_time else False
 
+class Script(models.Model):
+    """脚本信息模型，存储各类脚本的基本信息"""
+
+    # 脚本类型选项
+    SCRIPT_TYPE_CHOICES = [
+        ('register', '注册类'),
+        ('maintain', '养号类'),
+        # 可以根据需要添加更多类型
+    ]
+
+    # 状态选项（已去掉不活跃状态）
+    STATUS_CHOICES = [
+        ('active', '活跃'),
+        ('pending', '待审核'),
+        ('banned', '已禁用'),
+    ]
+
+    id = models.AutoField(primary_key=True, verbose_name="脚本ID")
+    title = models.CharField(max_length=200, verbose_name="脚本标题")
+    description = models.TextField(verbose_name="脚本描述")
+    script_type = models.CharField(
+        max_length=20,
+        choices=SCRIPT_TYPE_CHOICES,
+        db_column='scriptType',
+        verbose_name="脚本类型"
+    )
+    required_points = models.IntegerField(
+        db_column='requiredPoints',
+        verbose_name="所需点数"
+    )
+    usage_count = models.IntegerField(
+        db_column='usageCount',
+        default=0,
+        verbose_name="使用次数"
+    )
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default='active',
+        verbose_name="状态"
+    )
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="创建时间")
+    updated_at = models.DateTimeField(auto_now=True, verbose_name="更新时间")
+
+    class Meta:
+        db_table = 'scripts'  # 数据库表名
+        verbose_name = '脚本'
+        verbose_name_plural = '脚本'
+        ordering = ['-usage_count']  # 默认按使用次数降序排列
+
+    def __str__(self):
+        return self.title
