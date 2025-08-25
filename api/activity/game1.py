@@ -61,11 +61,13 @@ def finish_game(token, uuid, pushToken: str = None):
         "万象演算流程",
         "任务奖励查询",
         "钓鱼操作",
-        "斗法"
+        "斗法",
+        "九龙秘宝抽奖",
+        "领取任务"
     ]
     total_steps = len(steps)
 
-    for i in range(3000):
+    for i in range(10000):
         try:
             time.sleep(1)
             count += 1
@@ -144,6 +146,13 @@ def finish_game(token, uuid, pushToken: str = None):
             print(f"📝 步骤 19/{total_steps}：{steps[18]}")
             get5(token, uuid)
 
+            # 20. 九龙秘宝抽奖
+            print(f"📝 步骤 20/{total_steps}：{steps[18]}")
+            hdCchou(token, uuid)
+
+            # 21. 斗法
+            print(f"📝 步骤 21/{total_steps}：{steps[18]}")
+            qiYuanTask1(token, uuid)
             # 循环结束提示
             print(f"✅ 第 {count} 次循环执行完毕\n")
 
@@ -742,7 +751,6 @@ def fight_boss(token, combat_type, uuid, pushToken: str = None):
 
             # 获取当前步骤的请求数据（默认空字典）
             data = config.get("data", [{}])[i] if config.get("data") else {}
-
             # 发送请求
             response = requests.post(url, headers=headers, json=data, timeout=10)
             response.raise_for_status()
@@ -768,7 +776,7 @@ def fight_boss(token, combat_type, uuid, pushToken: str = None):
                     win_status = end_info.get("win")
 
                     if win_status == 1 and pushToken:
-                        sendMsg(pushToken, "打赢BOSS通知", f"挑战{config['name']}成功，✅ 胜利！")
+                        sendMsg(pushToken, f"打赢BOSS{config['name']}通知", f"挑战{config['name']}成功，✅ 胜利！")
                     result = f"挑战{config['name']}成功，{'✅ 胜利！' if win_status == 1 else '❌ 未获胜'}"
                 else:
                     result = f"挑战{config['name']}未能完成"
@@ -1060,3 +1068,54 @@ def upgrade(token, uuid):
 
     # 只有两个接口都成功时返回True，否则返回0
     return True if success_count == 2 else 0
+
+# 九龙秘宝
+def hdCchou(token, uuid):
+    try:
+        url = f"https://game.xywzzj.com/gm1/huodong/hdCchou?uuid={uuid}&token={token}&version=1.0.0&time={time.time()}"
+        headers = {"Content-Type": "application/json"}
+        data = {"hdcid":"1","num":10}
+
+        res = requests.post(url, headers=headers, json=data, timeout=10)
+        res.raise_for_status()
+        result = res.json()
+
+        if result.get("type") == 1:
+            print("🎁 九龙抽奖完成")
+            return f"{token}九龙抽奖完成"
+        else:
+            print(f"😥 九龙抽奖完成：{result.get('win', {}).get('msg', '未知原因')}")
+            return None
+
+    except Exception as e:
+        print(f"❌ 特惠会操作出错：{str(e)}")
+
+# 寿源起灵任务
+def qiYuanTask1(token, uuid):
+    # 定义要依次使用的ID数组
+    task_ids = [1, 4, 6, 8, 10, 11, 12]
+    results = []
+
+    for task_id in task_ids:
+        try:
+            url = f"https://game.xywzzj.com/gm1/huodong/qiYuanTask1?uuid={uuid}&token={token}&version=1.0.0&time={time.time()}"
+            headers = {"Content-Type": "application/json"}
+            data = {"hdcid": "1", "id": str(task_id)}  # 使用当前循环的ID
+
+            res = requests.post(url, headers=headers, json=data, timeout=10)
+            res.raise_for_status()
+            result = res.json()
+
+            if result.get("type") == 1:
+                print(f"🎁 寿源起灵任务（ID: {task_id}）领取完成")
+                results.append(f"{token}寿源起灵任务（ID: {task_id}）完成")
+            else:
+                print(f"😥 寿源起灵任务（ID: {task_id}）：{result.get('win', {}).get('msg', '未知原因')}")
+
+        except Exception as e:
+            print(f"❌ 寿源起灵任务（ID: {task_id}）操作出错：{str(e)}")
+
+        # 每个任务之间添加延迟，避免请求过于频繁
+        time.sleep(1)
+
+    return results
